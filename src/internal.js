@@ -231,7 +231,7 @@ export const cleanupInput = (input, replacements = [], options = {}) => {
 };
 
 export const findTemplate = (input) => {
-  return templates[input.country_code] ? templates[input.country_code] : templates.default;
+  return templates[input.country_code] || templates.default;
 };
 
 export const chooseTemplateText = (template, input) => {
