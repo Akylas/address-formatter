@@ -88,7 +88,8 @@ export const applyAliases = (input) => {
   }
 
   for (let i = 0; i < inputKeys.length; i++) {
-    const alias = tailoredAliases.find((a) => a.alias === inputKeys[i]);
+    const key = inputKeys[i];
+    const alias = tailoredAliases.find((a) => a.alias === key);
     if (alias && !input[alias.name]) {
       input[alias.name] = input[alias.alias];
     }
@@ -148,16 +149,21 @@ export const cleanupInput = (input, replacements = [], options = {}) => {
   }
   if (replacements && replacements.length) {
     for (let i = 0; i < inputKeys.length; i++) {
+      const key = inputKeys[i];
+      if (!input[key]) {
+        //ignore null input properties
+        continue;
+      }
       for (let j = 0; j < replacements.length; j++) {
-        const componentRegex = new RegExp(`^${inputKeys[i]}=`);
+        const componentRegex = new RegExp(`^${key}=`);
         if (replacements[j][0].match(componentRegex)) {
           const val = replacements[j][0].replace(componentRegex, '');
           const valRegex = new RegExp(val);
-          if (input[inputKeys[i]].match(valRegex)) {
-            input[inputKeys[i]] = input[inputKeys[i]].replace(valRegex, replacements[j][1]);
+          if (input[key].match(valRegex)) {
+            input[key] = input[key].replace(valRegex, replacements[j][1]);
           }
         } else {
-          input[inputKeys[i]] = `${input[inputKeys[i]]}`.replace(new RegExp(replacements[j][0]), replacements[j][1]);
+          input[key] = `${input[key]}`.replace(new RegExp(replacements[j][0]), replacements[j][1]);
         }
       }
     }
@@ -178,12 +184,14 @@ export const cleanupInput = (input, replacements = [], options = {}) => {
   }
   const unknownComponents = [];
   for (let i = 0; i < inputKeys.length; i++) {
-    if (knownComponents.indexOf(inputKeys[i]) === -1) {
-      unknownComponents.push(inputKeys[i]);
+    const key = inputKeys[i];
+    //ignore null input properties
+    if (input[key] && knownComponents.indexOf(key) === -1) {
+      unknownComponents.push(key);
     }
   }
   if (unknownComponents.length) {
-    input.attention = unknownComponents.map((c) => input[c]).join(', ');
+    input.attention = unknownComponents.map((c) => input[c]).filter(s=>!!s).join(', ');
   }
 
   if (input.postcode && options.cleanupPostcode !== false) {
