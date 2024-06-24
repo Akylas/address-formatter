@@ -182,17 +182,17 @@ export const cleanupInput = (input, replacements = [], options = {}) => {
     // eslint-disable-next-line camelcase
     input.county_code = getCountyCode(input.county, input.country_code);
   }
-  const unknownComponents = [];
-  for (let i = 0; i < inputKeys.length; i++) {
-    const key = inputKeys[i];
-    //ignore null input properties
-    if (input[key] && knownComponents.indexOf(key) === -1) {
-      unknownComponents.push(key);
-    }
-  }
-  if (unknownComponents.length) {
-    input.attention = unknownComponents.map((c) => input[c]).filter(s=>!!s).join(', ');
-  }
+  // const unknownComponents = [];
+  // for (let i = 0; i < inputKeys.length; i++) {
+  //   const key = inputKeys[i];
+  //   //ignore null input properties
+  //   if (input[key] && knownComponents.indexOf(key) === -1) {
+  //     unknownComponents.push(key);
+  //   }
+  // }
+  // if (unknownComponents.length) {
+  //   input.attention = unknownComponents.map((c) => input[c]).filter(s=>!!s).join(', ');
+  // }
 
   if (input.postcode && options.cleanupPostcode !== false) {
     // convert to string
